@@ -15,7 +15,7 @@ function err(what, err){
   fireLog(what);
 }
 
-function fireLog(what){
+function fireLog(what) {
   try{ return Tools.logToFirebase(config.projectName, what); }
   catch(e){tellBob(e,'Unable to log to firebase for '+(config.projectName || '[unknown]'))}
 }
@@ -269,35 +269,53 @@ function removeMultipleLineBreaks(element) {
   }
 }
 
-function dateDiff_TEST(){Logger.log(DateDiff.inDays(new Date(), new Date(new Date().setDate(new Date().getDate() -1))))}
-var DateDiff = {
-  // Usage:
-  // Logger.log(DateDiff.inDays(todayDate, futureDate));
-  inDays: function(d1, d2) {
-    if( ! (d1 && d2)) return;
-    var t2 = d2.getTime();
-    var t1 = d1.getTime();
-    return parseInt((t2-t1)/(24*3600*1000));
-  },
-  inWeeks: function(d1, d2) {
-    if( ! (d1 && d2)) return;
-    var t2 = d2.getTime();
-    var t1 = d1.getTime();
-    return parseInt((t2-t1)/(24*3600*1000*7));
-  },
-  inMonths: function(d1, d2) {
-    if( ! (d1 && d2)) return;
+function dates_TEST() {
+  var d1 = new Date(2018,0,10,0);
+  var d2 = new Date(2018,0,11,1);
+//  var d = Math.ceil((d2 - d1) / (24 * 3600 * 1000))
+  var d = DateDiff.inDays(d1, d2)
+  Logger.log(d)
+}
+
+var DateDiff = (function(ns) {
+
+  // Get the number of whole days
+  ns.inDays = function(d1, d2) {  
+    checkParams(d1, d2)    
+    return Math.floor((d2 - d1) / (24 * 3600 * 1000))
+  }
+  
+  ns.inWeeks = function(d1, d2) {  
+    checkParams(d1, d2)        
+    return parseInt((d2 - d1)/(24 * 3600 * 1000 * 7));
+  }
+  
+  ns.inMonths = function(d1, d2) {
+  
+    checkParams(d1, d2)    
+    
     var d1Y = d1.getFullYear();
     var d2Y = d2.getFullYear();
     var d1M = d1.getMonth();
     var d2M = d2.getMonth();
-    return (d2M+12*d2Y)-(d1M+12*d1Y);
-  },
-  inYears: function(d1, d2) {
-    if( ! (d1 && d2)) return;
-    return d2.getFullYear()-d1.getFullYear();
+    
+    return (d2M + 12 * d2Y) - (d1M + 12 * d1Y);
   }
-}
+  
+  inYears: function(d1, d2) {
+    checkParams(d1, d2)    
+    return d2.getFullYear() - d1.getFullYear();
+  }
+  
+  function checkParams(d1, d2) {
+    if (!(d1 instanceof Date) || !(d2 instanceof Date)) {
+      throw new Error('DateDiff - bad args. d1: ' + d1 + ', d2:' + d2)
+    }
+  }
+  
+  return ns;
+  
+})(DateDiff || {})
 
 function arrayDiff(arr1, arr2) {
   var newArr = arr1.concat(arr2);

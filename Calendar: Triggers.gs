@@ -1,69 +1,143 @@
-function calendar_checkDeadlines_TEST_AS_BOB() {
-  config.debugEmail = 'bob+ccn@rupholdt.com';
-  calendar_checkDeadlines()
+
+function debug(message) {
+  log(message)
 }
+
+function fDate_LOCAL(date, format){ 
+  return Utilities.formatDate(date, Session.getScriptTimeZone(), 'MM.dd')
+}
+
+/**
+ * Check event date vs deadlines, send notifications at
+ * three days before deadline, 1 day before deadline and day after deadline
+ */
+
 function calendar_checkDeadlines() {
-  //check event date vs deadlines, send notifications at
-  //three days before deadline, 1 day before deadline and day after deadline
-  var ss = SpreadsheetApp.openById(config.files.eventsCalendar);
+/*
+  var ss = SpreadsheetApp.getActive()
+  
+  if (ss === null) {
+    log('Using stored calendar sheet ID')
+    ss = SpreadsheetApp.openById(config.files.eventsCalendar);
+  }
+*/
+
+  var ss = SpreadsheetApp.openById('1LgUUgAQOxM__DQGnhbduQ7YUStTUjRiPbCXnfUs0f3I');
+
   var spreadsheetUrl = ss.getUrl();
   var sheet = ss.getSheetByName(config.eventsCalendar.dataSheetName);
   var values = sheet.getDataRange().getValues();
-  var tiers = ['GOLD','SILVER','BRONZE'];
-  var tierDeadlines = {BRONZE:8, SILVER:9, GOLD:10};//column number for matching promo type
-  var staffDataRange = SpreadsheetApp.openById(config.files.staffData).getDataRange()
-  var staff = calendar_getStaff();//get all staff memebers
-  var teamLeads = staff.filter(function(i){return i.isTeamLeader})//remove non-team leaders
+  var TIERS = ['GOLD','SILVER','BRONZE'];
+  var TIER_DEADLINES = {BRONZE: 8, SILVER: 9, GOLD: 10}; // column number for matching promo type
+  
+  // Get the staff data
+  // ------------------
+  
+  var staffDataRange = SpreadsheetApp.openById(config.files.staffData).getDataRange();
+  var staff = calendar_getStaff();
+  
+  //remove non-team leaders
+  var teamLeads = staff.filter(function(i) {
+    return i.isTeamLeader;
+  })
+  
   var teams = teamLeads.reduce(function (out, cur) {
-    if(cur.isTeamLeader) out[cur.team] = {name:cur.name,email:cur.email};
+    if (cur.isTeamLeader) {    
+      out[cur.team] = {
+        name:cur.name,
+        email:cur.email
+      };
+    }
     return out;
-  },{});
-  var today = getMidnight();//midnight, duh
+  }, {});
   
+  // Check each row
+  // --------------
   
-  //if(config.debugEmail) today = new Date(today.setDate(today.getDate()-2))//debug to check past dates
-  if(config.debugEmail) log('For date: '+fDate(today))
+  var today = getMidnight();
+  var startRowIndex = sheet.getFrozenRows();
+//  var numberOfRows = values.length;
+  var numberOfRows = 5;
+
+  for (var rowIndex = startRowIndex; rowIndex < numberOfRows; rowIndex++) {
   
+    var rowNumber = rowIndex + 1;
   
-  for(var row=sheet.getFrozenRows(); row<values.length; row++) {
-    var promoRequested = values[row][6].toLowerCase() == 'no' ? false : true;//possble values yes, no, n/a - only process if 'no'
-    if(promoRequested) continue;//already requested (yes) or not needed (n/a), no need to continue
+    //possble values: "yes", "no", "n/a", "error". Only process if 'no'
     
-    //check each tier for a deadline match
-    for(var t=0; t<tiers.length; t++){
-      //bad form, the next bit assumes there really is a date in the columns that should never have anything but a date in them
-      var promoType = tiers[t];
-      var promoDeadline = values[row][tierDeadlines[promoType]];
-      var dateDiffInDays = DateDiff.inDays(today, promoDeadline);
-      if([-1,1,3].indexOf(dateDiffInDays) > -1){
-        if(config.debugEmail) log('Row: '+(row+1)+' - '+promoType+' '+dateDiffInDays)//log days that match
-        break;//matching tier found (there can only be one), stop checking and continue to send email 
+    var promoRequested = values[rowIndex][6].toLowerCase()
+    
+    if (promoRequested !== 'no') {
+      debug('promoRequested not "no", skip this row: ' + promoRequested + ' (' + rowNumber + ')')
+      continue; 
+    }
+    
+    // Check each tier for a deadline match
+    // ------------------------------------
+    
+    for (var tiersIndex = 0; tiersIndex < TIERS.length; tiersIndex++) {
+    
+      var promoType      = TIERS[tiersIndex];
+      var promoIndex     = TIER_DEADLINES[promoType];
+      var promoDeadline  = values[rowIndex][promoIndex];
+      
+      debug('rowNumber: ' + rowNumber + '/' + promoType)
+      
+      if (!(promoDeadline instanceof Date)) {
+        debug('promodeadline not date, skip this tier: ' + promoDeadline)
+        continue;
       }
-      //      if(config.debugEmail) log((row+1)+' - '+values[row][6]+' '+dateDiffInDays);continue//log the non-matching days too
-    }//end for(tiers)
-
-
-
+      
+      var dateDiffInDays = DateDiff.inDays(today, promoDeadline);
+      
+      //if the data difference is not -1, 1 or 3 then move onto the next tier
+      if ([-1, 1, 3].indexOf(dateDiffInDays) === -1) {
+        debug('dateDiffInDays ignored, skip this tier: ' + dateDiffInDays)      
+        continue;
+      }
+        
+      if (dateDiffInDays === -1 && promoType !== 'BRONZE') {
+        debug('-1 dateDiffInDays ignored as not BRONZE: ' + dateDiffInDays)            
+        continue;
+      }
+      
+      sendEmail();
+            
+    } // for each tier
     
-//    if(config.debugEmail) continue;//end for(rows) - don't send email, just log matches
-
-
-
-    
-    var eventDate      = values[row][3];
-    var eventName      = values[row][4];
-    var staffSponsor   = values[row][7];//this is the sponsoring team, not the person
+  } // for each row
+  
+  return
+  
+  // Private Functions
+  // -----------------
+  
+  function sendEmail() {
+  
+    // The is a large difference between the deadlines for the tiers so only one email per day will
+    // ever get sent as only one deadline will match
+  
+    var eventDate      = values[rowIndex][3];
+    var eventName      = values[rowIndex][4];
+    var staffSponsor   = values[rowIndex][7];//this is the sponsoring team, not the person
     
     var to = teams && teams[staffSponsor] && teams[staffSponsor].email;
+    to = to || vLookup('Communications Director', staffDataRange, 4, 8);//should make a function for this like getCommunicationsDirector()
+        
     var toName = teams && teams[staffSponsor] && teams[staffSponsor].name;
-    to = to || vLookup('Communications Director', staffDataRange, 4, 8);///should make a function for this like getCommunicationsDirector()
     toName = toName || vLookup('Communications Director', staffDataRange, 4, 0);
     
-    switch(dateDiffInDays){
+    var body = '';
+    var subject = '';
+    
+    debug('dateDiffInDays: ' + dateDiffInDays + ' (' + rowNumber + ')');
+    
+    switch (dateDiffInDays) {
         
       case -1: //one day past final (Bronze) deadline - sent to communications director - they've just missed the last chance for any promotion
-        sheet.getRange(row+1, 7).setValue('N/A');//col 7 = PROMO REQUESTED
-        calendar_updateEventStatus(row+1);
+      
+        sheet.getRange(rowNumber, 7).setValue('N/A');//col 7 = PROMO REQUESTED
+//        calendar_updateEventStatus(rowNumber);
         var staffRange = SpreadsheetApp.openById(config.files.staffData).getDataRange();
         to = vLookup('Communications Director', staffRange, 4, 8);
         subject = config.eventsCalendar.emails.expired.subject;
@@ -71,65 +145,43 @@ function calendar_checkDeadlines() {
         break;
         
       case 1: //day before promoType deadline - sent to team leader
-        subject = Utilities.formatString(config.eventsCalendar.emails.oneDay.subject, promoType, eventDate, eventName);;
+        
+        subject = Utilities.formatString(config.eventsCalendar.emails.oneDay.subject, promoType, fDate_LOCAL(eventDate), eventName);;
         body = config.eventsCalendar.emails.oneDay.body;
         break;
         
       case 3: //3 days before promoType deadline
-        subject = Utilities.formatString(config.eventsCalendar.emails.threeDays.subject, promoType, eventDate, eventName);;
+      
+        subject = Utilities.formatString(config.eventsCalendar.emails.threeDays.subject, promoType, fDate_LOCAL(eventDate), eventName);;
         body = config.eventsCalendar.emails.threeDays.body;
         break;
         
       default: 
-        continue;//skip record for all other values
+        throw new Error('Bad date difference');
     }
     
     body = body
-    .replace(/{recipient}/g,      toName )
-    .replace(/{staffSponsor}/g,   staffSponsor )
-    .replace(/{eventDate}/g,      fDate(eventDate) )
-    .replace(/{eventName}/g,      eventName )
-    .replace(/{promoType}/g,      promoType )
-    .replace(/{promoDeadline}/g,  fDate(promoDeadline) )
-    .replace(/{spreadsheetUrl}/g, spreadsheetUrl )
-    .replace(/{formUrl}/g,        config.eventsCalendar.promoFormUrl )
-    ;
-
-    
-    if(config.debugEmail) subject = '[ '+(row+1)+' ] '+subject    
-    if(config.debugEmail) log('Email sent for '+subject)    
-
-
-    
+      .replace(/{recipient}/g,      toName )
+      .replace(/{staffSponsor}/g,   staffSponsor )
+      .replace(/{eventDate}/g,      fDate_LOCAL(eventDate) )
+      .replace(/{eventName}/g,      eventName )
+      .replace(/{promoType}/g,      promoType )
+      .replace(/{promoDeadline}/g,  Utilities.formatDate(promoDeadline, Session.getScriptTimeZone(), 'E, MMMM d') )
+      .replace(/{spreadsheetUrl}/g, spreadsheetUrl )
+      .replace(/{formUrl}/g,        config.eventsCalendar.promoFormUrl );  
+/*
     MailApp.sendEmail({
       name: config.eventsCalendar.notifyFromName,
       to: config.debugEmail || to,
       subject: subject,
       htmlBody: body
     });
-    
-    
-  }
-}
+*/  
+    debug('Email sent (' + rowNumber + '). Subject: ' + subject + '\nto: ' + to + '\nbody: ' + body); 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  } // calendar_checkDeadlines.sendEmail()
+  
+} // calendar_checkDeadlines()
 
 function onEdit_eventsCalendar(e) {
   //  log('onEdit_eventsCalendar')
@@ -182,7 +234,7 @@ function calendar_checkTeamSheetsForErrors() {//triggered
       //oops!  This should not be. CHAD! We gots us a problem . . .
       MailApp.sendEmail({
         to       : config.errorNotificationEmail.join(','),
-        subject  : Utilities.formatString('Error in %s on %s', ss.getName(), fDate()),
+        subject  : Utilities.formatString('Error in %s on %s', ss.getName(), fDate_LOCAL()),
         htmlBody : Utilities.formatString('Unable to find sheet "%s" in <a href="%s">%s</a> for Team Lead "%s <%s>"', 
                                           team, ss.getUrl(), ss.getName(), teamLeads[t].name, teamLeads[t].email)
       })

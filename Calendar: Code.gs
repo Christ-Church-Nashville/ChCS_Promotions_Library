@@ -59,6 +59,7 @@ function calendar_ApplyFormula(){ //menu -- also fixed by Restore Header
 }
 
 function calendar_updateEventStatus(row) {
+
   var ss = SpreadsheetApp.openById(config.files.eventsCalendar);
   var sheet = ss.getSheetByName(config.eventsCalendar.dataSheetName);
   var values = sheet.getDataRange().getValues();
@@ -82,6 +83,7 @@ function calendar_updateEventStatus(row) {
 }
 
 function calendar_getStaff() {//returns [{},{},...]
+
   var sheet = SpreadsheetApp.openById(config.files.staffData).getActiveSheet();
   var values = sheet.getDataRange().getValues();
   values = values.slice(sheet.getFrozenRows());//remove headers if any
