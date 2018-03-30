@@ -1,29 +1,3 @@
-function dumpConfig(){Tools.dumpConfig()}
-
-function tellBob(what,optSubject){// for debugging
-  try{ Tools.tellBob(what, config.clientName, config.projectName, optSubject) }
-  catch(e){ 
-    write('Tools library inaccessible or not installed.');
-    MailApp.sendEmail({to:'bob+christchurchnashville@rupholdt.com',subject:'Error on Christ Church Nashville app',body:'Tools library inaccessible or not installed in CCN Promotions Library.'})
-  }
-}
-
-function err(what, err){
-  err = typeof err==='object' ? JSON.stringify(err) : err;
-  if(err) what = what + ' -- ' + err; 
-  if (config.debug) tellBob(what);
-  fireLog(what);
-}
-
-function fireLog(what) {
-  try{ return Tools.logToFirebase(config.projectName, what); }
-  catch(e){tellBob(e,'Unable to log to firebase for '+(config.projectName || '[unknown]'))}
-}
-
-function log(what){
-  Logger.log(typeof what=='object' ? JSON.stringify(what) : what);
-}
-
 function toast(what){
   if(typeof what == 'object') what = JSON.stringify(what);
   SpreadsheetApp.getActive().toast(what);
@@ -46,9 +20,10 @@ function hasTrigger(handlerName){ // Check for a trigger based on the name of th
 }
 
 function deleteTriggerByHandlerName(handlerName){ // Delete a trigger based on the name of the function it excecutes
+
   var allTriggers = ScriptApp.getProjectTriggers(),
-      deleted = false
-  ;
+      deleted = false;
+      
   for (var i=0; i < allTriggers.length; i++){
     if (allTriggers[i].getHandlerFunction() == handlerName){ // Found the trigger we're looking for
       ScriptApp.deleteTrigger(allTriggers[i]);

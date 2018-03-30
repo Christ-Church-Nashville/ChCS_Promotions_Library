@@ -1,8 +1,3 @@
-
-function debug(message) {
-  log(message)
-}
-
 function fDate_LOCAL(date, format){ 
   return Utilities.formatDate(date, Session.getScriptTimeZone(), 'MM.dd')
 }
@@ -13,17 +8,8 @@ function fDate_LOCAL(date, format){
  */
 
 function calendar_checkDeadlines() {
-/*
-  var ss = SpreadsheetApp.getActive()
-  
-  if (ss === null) {
-    log('Using stored calendar sheet ID')
-    ss = SpreadsheetApp.openById(config.files.eventsCalendar);
-  }
-*/
 
-  var ss = SpreadsheetApp.openById('1LgUUgAQOxM__DQGnhbduQ7YUStTUjRiPbCXnfUs0f3I');
-
+  var ss = getBoundDocument();
   var spreadsheetUrl = ss.getUrl();
   var sheet = ss.getSheetByName(config.eventsCalendar.dataSheetName);
   var values = sheet.getDataRange().getValues();
@@ -56,8 +42,8 @@ function calendar_checkDeadlines() {
   
   var today = getMidnight();
   var startRowIndex = sheet.getFrozenRows();
-//  var numberOfRows = values.length;
-  var numberOfRows = 5;
+  var numberOfRows = values.length;
+//  var numberOfRows = 5;
 
   for (var rowIndex = startRowIndex; rowIndex < numberOfRows; rowIndex++) {
   
@@ -68,7 +54,7 @@ function calendar_checkDeadlines() {
     var promoRequested = values[rowIndex][6].toLowerCase()
     
     if (promoRequested !== 'no') {
-      debug('promoRequested not "no", skip this row: ' + promoRequested + ' (' + rowNumber + ')')
+      bblogFine('promoRequested not "no", skip this row: ' + promoRequested + ' (' + rowNumber + ')')
       continue; 
     }
     
@@ -81,10 +67,10 @@ function calendar_checkDeadlines() {
       var promoIndex     = TIER_DEADLINES[promoType];
       var promoDeadline  = values[rowIndex][promoIndex];
       
-      debug('rowNumber: ' + rowNumber + '/' + promoType)
+      bblogFine('rowNumber: ' + rowNumber + '/' + promoType)
       
       if (!(promoDeadline instanceof Date)) {
-        debug('promodeadline not date, skip this tier: ' + promoDeadline)
+        bblogFine('promodeadline not date, skip this tier: ' + promoDeadline)
         continue;
       }
       
@@ -92,12 +78,12 @@ function calendar_checkDeadlines() {
       
       //if the data difference is not -1, 1 or 3 then move onto the next tier
       if ([-1, 1, 3].indexOf(dateDiffInDays) === -1) {
-        debug('dateDiffInDays ignored, skip this tier: ' + dateDiffInDays)      
+        bblogFine('dateDiffInDays ignored, skip this tier: ' + dateDiffInDays)      
         continue;
       }
         
       if (dateDiffInDays === -1 && promoType !== 'BRONZE') {
-        debug('-1 dateDiffInDays ignored as not BRONZE: ' + dateDiffInDays)            
+        bblogFine('-1 dateDiffInDays ignored as not BRONZE: ' + dateDiffInDays)            
         continue;
       }
       
@@ -130,7 +116,7 @@ function calendar_checkDeadlines() {
     var body = '';
     var subject = '';
     
-    debug('dateDiffInDays: ' + dateDiffInDays + ' (' + rowNumber + ')');
+    bblogInfo('dateDiffInDays: ' + dateDiffInDays + ' (' + rowNumber + ')');
     
     switch (dateDiffInDays) {
         
@@ -169,15 +155,15 @@ function calendar_checkDeadlines() {
       .replace(/{promoDeadline}/g,  Utilities.formatDate(promoDeadline, Session.getScriptTimeZone(), 'E, MMMM d') )
       .replace(/{spreadsheetUrl}/g, spreadsheetUrl )
       .replace(/{formUrl}/g,        config.eventsCalendar.promoFormUrl );  
-/*
+
     MailApp.sendEmail({
       name: config.eventsCalendar.notifyFromName,
-      to: config.debugEmail || to,
+      to: to,
       subject: subject,
       htmlBody: body
     });
-*/  
-    debug('Email sent (' + rowNumber + '). Subject: ' + subject + '\nto: ' + to + '\nbody: ' + body); 
+  
+    bblogInfo('Email sent (' + rowNumber + '). Subject: ' + subject + '\nto: ' + to + '\nbody: ' + body); 
 
   } // calendar_checkDeadlines.sendEmail()
   
