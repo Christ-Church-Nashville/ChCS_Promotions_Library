@@ -1,3 +1,73 @@
+function dumpConfig() {Tools.dumpConfig()}
+
+// BBLog
+// -----
+
+function bblogFine(what, optSubject){ 
+
+  if (!config.debug) {
+    return;
+  }
+
+  BBLog
+    .getLog({level: BBLog.Level.FINE})
+    .fine(what + ' - ' + (optSubject || ''))
+  
+}
+
+function bblogInfo(what, optSubject) { 
+
+  BBLog
+    .getLog()
+    .info(what + ' - ' + (optSubject || ''))
+}
+
+function bblogError(what, optSubject){ 
+
+//  var logLevel = (config.debug) ? BBLog.Level.FINE : BBLog.Level.INFO;
+
+  BBLog
+    .getLog({level: BBLog.Level.SEVERE})
+    .severe(what + ' - ' + (optSubject || ''))
+
+/*
+  try { 
+    Tools.tellBob(what, config.clientName, config.projectName, optSubject) 
+  }
+  catch(e){ 
+    write('Tools library inaccessible or not installed.');
+    MailApp.sendEmail({
+      to:'bob+christchurchnashville@rupholdt.com',
+      subject:'Error on Christ Church Nashville app',
+      body:'Tools library inaccessible or not installed in CCN Promotions Library.'
+    })
+  }
+*/  
+
+} // bblogError()
+
+// The rest
+// --------
+
+function err(what, err){
+  err = (typeof err ==='object') ? JSON.stringify(err) : err;
+  if (err) what = what + ' -- ' + err; 
+  bblogError(what);
+//  if (config.debug) bblog(what);
+//  fireLog(what);
+}
+
+/*
+function fireLog(what) {
+  try{ return Tools.logToFirebase(config.projectName, what); }
+  catch(e){tellBob(e,'Unable to log to firebase for '+(config.projectName || '[unknown]'))}
+}
+*/
+function log(what){
+  Logger.log(typeof what=='object' ? JSON.stringify(what) : what);
+}
+
+
 /*
 .  Copy this all to your project
 .  assumes config global var
@@ -11,14 +81,15 @@ SpreadsheetApp.getUi().createMenu('Log')
 .addItem('Disable Logging', 'setLoggingOff')
 
 */
-function setLoggingHigh()    {setLogging(2)}// log(foo,2) // detail logging, normally off
-function setLoggingNormal()  {setLogging(1)}// log(foo,1) or log(foo) // normal logging
-function setLoggingCritical(){setLogging(0)}// log(foo,0) // critical, always show
-function setLoggingOff(){setLogging(-1)}//No logging - don't use this.
-function setLogging(level){PropertiesService.getScriptProperties().setProperty('LOGGING_LEVEL', level)}
+function setLoggingHigh()     {setLogging(2)}// log(foo,2) // detail logging, normally off
+function setLoggingNormal()   {setLogging(1)}// log(foo,1) or log(foo) // normal logging
+function setLoggingCritical() {setLogging(0)}// log(foo,0) // critical, always show
+function setLoggingOff()      {setLogging(-1)}//No logging - don't use this.
+function setLogging(level)    {PropertiesService.getScriptProperties().setProperty('LOGGING_LEVEL', level)}
 
 //function log(what, level){//there's already a log function and I don't want to replace all the places I'm using it so ...
-function write(what, level){
+function write(what, level) {
+
   //and for when you want to reallly slow down a sheet:
   //conditional formatting rules to color matching threads applied to B1:B: 
   //for contrast use colors: Light GYBOP then Dark GYBOP
@@ -45,7 +116,8 @@ function write(what, level){
   if( ! config) throw 'Missing global config var';
   //  if(!config.debug) return;//comment out if not using config.debug, duh
   var thread = config.logThread;
-  if(! thread){//tags all entries from this script instance with the same thread number
+  
+  if(!thread){//tags all entries from this script instance with the same thread number
     thread = new Date().getTime();
     config.logThread = thread;
   }

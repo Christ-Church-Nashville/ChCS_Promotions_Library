@@ -1,8 +1,10 @@
-function onOpen(){
-  var boundDoc = getBoundDocument();//var boundDoc = SpreadsheetApp.getActive();//typehint
-  if( ! boundDoc) return;//no bound document so nothing to do
+function onOpen() {
 
-  switch(boundDoc.getId()){
+  var boundDoc = getBoundDocument();//var boundDoc = SpreadsheetApp.getActive();//typehint
+  if (!boundDoc) return;//no bound document so nothing to do
+
+  switch (boundDoc.getId()){
+  
     case config.files.staffData              : makeMenu_staffData(); break;
     case config.files.responseForm           : makeMenu_responseForm(); break;
     case config.files.eventsCalendar         : makeMenu_eventsCalendar(); break;
@@ -15,7 +17,8 @@ function onOpen(){
   }
 }
 
-function onEdit(e){
+function onEdit(e) {
+
   var boundDoc = getBoundDocument();//var boundDoc = SpreadsheetApp.getActive();//typehint
   if( ! boundDoc) return;//no bound document so nothing to do
 

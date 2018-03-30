@@ -10,6 +10,10 @@
       "userSymbol": "Tools",
       "libraryId": "164wU-9TQb1vyEi_flrGutYZHANDSugIbkQflMRAu1zpHqX4ocuCpadHM",
       "version": "27"
+    }, {
+      "userSymbol": "BBLog",
+      "libraryId": "1kzzYZhgODZluRmjsjh7t3O-ftmFAF9h1jaRHU0rOdf9irF0VUiJW33Kt",
+      "version": "7"
     }]
   },
   "exceptionLogging": "STACKDRIVER"
