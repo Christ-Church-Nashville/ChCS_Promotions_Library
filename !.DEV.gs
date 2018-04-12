@@ -1,24 +1,13 @@
-function doNothing(){}
-
-function announcements_getWeekTitles_TEST(){
-  Tools.log(announcements_getWeekTitles(),true)
+function test_announcements_getWeekTitles(){
+  Log_.info(announcements_getWeekTitles(), true)
 }
 
-/*
-
-This script also makes use of the Bob's Tookit library
-Script ID: 164wU-9TQb1vyEi_flrGutYZHANDSugIbkQflMRAu1zpHqX4ocuCpadHM
-
-This is soely for debugging and error reporting and should not be used for production code.
-Especially seeing as it might cease to exist unexpectedly - not that it should, just being cautious.
-It can be accessed using the Tools identifier.
-
-*/
-
 function announcements_logAllProperties_DEV(){
+
   var user     = PropertiesService.getUserProperties().getProperties();
-  try{ var doc = PropertiesService.getDocumentProperties().getProperties();}catch(e){/* No doc props in standalone script */}
+  try{ var doc = PropertiesService.getDocumentProperties().getProperties();} catch(e){/* No doc props in standalone script */}
   var script   = PropertiesService.getScriptProperties().getProperties();
+  
   log( (Object.keys(user).length ? JSON.stringify(user) : 'No user props' ) + '\n\n');
   log( (doc && Object.keys(doc).length ? JSON.stringify(doc) : 'No document props' ) + '\n\n');
   log( Object.keys(script).length ? JSON.stringify(script) : 'No script props' );
