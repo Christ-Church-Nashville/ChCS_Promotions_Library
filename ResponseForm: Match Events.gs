@@ -1,8 +1,8 @@
 function responseForm_showInstructions_MatchEvent(sheet){//options = {} with template var names
   //sheetName = 
-  //  gold : "Gold Raw Data 10_27 copy"
-  //  silver : "Silver Raw Data 10_27 copy"
-  //  bronze : "Bronze Raw Data 10_27 copy"
+  //  Gold : "Gold Raw Data 10_27 copy"
+  //  Silver : "Silver Raw Data 10_27 copy"
+  //  Bronze : "Bronze Raw Data 10_27 copy"
   
   var sheetName = sheet ? sheet.getName() : null;
   

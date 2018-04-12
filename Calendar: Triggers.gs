@@ -13,8 +13,8 @@ function calendar_checkDeadlines() {
   var spreadsheetUrl = ss.getUrl();
   var sheet = ss.getSheetByName(config.eventsCalendar.dataSheetName);
   var values = sheet.getDataRange().getValues();
-  var TIERS = ['GOLD','SILVER','BRONZE'];
-  var TIER_DEADLINES = {BRONZE: 8, SILVER: 9, GOLD: 10}; // column number for matching promo type
+  var TIERS = ['Gold','Silver','Bronze'];
+  var TIER_DEADLINES = {Bronze: 8, Silver: 9, Gold: 10}; // column number for matching promo type
   
   // Get the staff data
   // ------------------
@@ -82,8 +82,8 @@ function calendar_checkDeadlines() {
         continue;
       }
         
-      if (dateDiffInDays === -1 && promoType !== 'BRONZE') {
-        bblogFine('-1 dateDiffInDays ignored as not BRONZE: ' + dateDiffInDays)            
+      if (dateDiffInDays === -1 && promoType !== 'Bronze') {
+        bblogFine('-1 dateDiffInDays ignored as not Bronze: ' + dateDiffInDays)            
         continue;
       }
       
