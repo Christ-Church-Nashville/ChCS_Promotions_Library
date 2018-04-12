@@ -50,11 +50,11 @@ function calendar_ApplyFormula(){ //menu -- also fixed by Restore Header
   var values = sheet.getDataRange().getValues();
   //fix the WEEK column formula
   sheet.getRange('A3').setFormula('={"WEEK"; ArrayFormula( if(D4:D, WEEKNUM(D4:D), IFERROR(1/0)) ) }')
-  //fix the BRONZE, SILVER, GOLD column formulae
+  //fix the Bronze, Silver, Gold column formulae
   sheet.getRange('I3:K3').setFormulas([[
-    '={"BRONZE";ArrayFormula(if(LEN(D4:D),if(GTE(D4:D, TODAY()+21), D4:D-21, "--"),IFERROR(1/0)))}',
-    '={"SILVER";ArrayFormula(if(LEN(D4:D),if(GTE(D4:D, TODAY()+42), D4:D-42, "--"),IFERROR(1/0)))}',
-    '={"GOLD";  ArrayFormula(if(LEN(D4:D),if(GTE(D4:D, TODAY()+70), D4:D-70, "--"),IFERROR(1/0)))}'
+    '={"Bronze";ArrayFormula(if(LEN(D4:D),if(GTE(D4:D, TODAY()+21), D4:D-21, "--"),IFERROR(1/0)))}',
+    '={"Silver";ArrayFormula(if(LEN(D4:D),if(GTE(D4:D, TODAY()+42), D4:D-42, "--"),IFERROR(1/0)))}',
+    '={"Gold";  ArrayFormula(if(LEN(D4:D),if(GTE(D4:D, TODAY()+70), D4:D-70, "--"),IFERROR(1/0)))}'
   ]]);
 }
 
