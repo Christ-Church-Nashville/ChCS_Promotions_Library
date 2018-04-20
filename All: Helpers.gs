@@ -87,7 +87,7 @@ function assignDeep(target, varArgs) {
     var nextSource = arguments[i];
     if (nextSource != null) {
       for (var nextKey in nextSource) {
-        // Avoid bugs when hasOwnProperty is shadowed
+        // Avoid bugs when hasOwnProperty is shadowed (https://tinyurl.com/y86gpoum)
         if (Object.prototype.hasOwnProperty.call(nextSource, nextKey)) {
           if (typeof to[nextKey] === 'object' 
               && to[nextKey] 

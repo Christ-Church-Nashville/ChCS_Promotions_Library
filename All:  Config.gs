@@ -38,25 +38,13 @@ var config = {//dev note: this must be set in a file that loads early so it is a
 */
 
 function updateConfig(configObj){
+
   //since PropertiesService.getDocumentProperties() is not available to this library script
   //the calling script pushes it's config back here to be merged with the local config
-  if( ! configObj) throw 'Missing config object';
+  if (!configObj) {
+    throw 'Missing config object';
+  }
+  
   //merge supplied config with local config, supplied values (should) replace defaults
   assignDeep(config, configObj);
 }
-
-/*
-To add a new config section
-create a new script file named SectionName: Config
-paste the below into it and replace both newSectionName items
-
-try{
-  config.newSectionName = {
-    
-  }
-}
-catch(e){ err('Unable to set config.newSectionName') }
-
-
-*/
-
