@@ -5,7 +5,6 @@ These are here as both a backup of the originals and a reference to implement mo
 
 *******************************************************************
 //MASTER SUNDAY ANNOUNCEMENTS
-
 var documentConfig = {
   //no doc-specific config options at this time  
 };
@@ -24,8 +23,8 @@ function insertWeeks(){PL.announcements_master_insertWeeks()}
 function masterToArchive(){PL.announcements_masterToArchive()}
 
 function dumpConfig(){PL.dumpConfig()}
-
 //END MASTER SUNDAY ANNOUNCEMENTS
 *******************************************************************
+
 
 */

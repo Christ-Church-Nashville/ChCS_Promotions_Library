@@ -34,9 +34,7 @@ deadline  : 8,//weeks from Sunday next before promo start
     logSheetName : 'ChangeLog',//defaults to 'ChangeLog'
   },
 };
-
 documentConfig.changeLog.watchSheets = [documentConfig.dataSheetName];
-
 //push config options to library
 PL.updateConfig(promo:{documentConfig});
 //get merged config from library
@@ -44,6 +42,7 @@ PL.updateConfig(promo:{documentConfig});
 //local functions using library functions
 function onEdit(e){PL.onEdit_responseForm(e)}
 function onEdit_Triggered(e){PL.onEdit_responseForm_Triggered(e)}
+
 
 */
 

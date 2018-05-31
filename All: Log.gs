@@ -30,6 +30,20 @@ function bblogError(what, optSubject){
     .getLog({level: BBLog.Level.SEVERE})
     .severe(what + ' - ' + (optSubject || ''))
 
+/*
+  try { 
+    Tools.tellBob(what, config.clientName, config.projectName, optSubject) 
+  }
+  catch(e){ 
+    write('Tools library inaccessible or not installed.');
+    MailApp.sendEmail({
+      to:'bob+christchurchnashville@rupholdt.com',
+      subject:'Error on Christ Church Nashville app',
+      body:'Tools library inaccessible or not installed in CCN Promotions Library.'
+    })
+  }
+*/  
+
 } // bblogError()
 
 // The rest

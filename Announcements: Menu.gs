@@ -54,17 +54,23 @@ function makeMenu_announcements_master(){
 
 function makeMenu_announcements_twoWeeksHence() {
   DocumentApp.getUi().createMenu('[ Custom Menu ]')  
-  .addItem('Invite Staff Sponsors to Comment', 'PL.announcements_sendMailFunction')
+  .addItem('Invite Staff Sponsors to Comment',                                                         'PL.announcements_sendMailFunction')
   .addSeparator()
-  .addItem('Backdate Content',          'PL.announcements_rotateContent')//was announcements_transferText
-  .addSubMenu(
-    DocumentApp.getUi().createMenu('➤ Backdate Content - Step by step')
-    .addItem('1 - Return This week to Master', 'PL.announcements_moveThisToMaster')
-    .addItem('2 - Move Next week to This week', 'PL.announcements_moveNextToThis')
-    .addItem('3 - Move Draft to Next Week', 'PL.announcements_moveDraftToNext')
-    .addItem('4 - Get new Master content for Draft', 'PL.announcements_moveMasterToDraft')
-    .addItem('5 - Archive oldest week from Master', 'PL.announcements_moveOldestToArchive')
-  )
+  .addItem('Rotate Content',                                                                           'PL.announcements_rotateContent')//was announcements_transferText
+  .addSeparator()
+  .addItem('Copy This Sunday\'s Service Slides to This Sunday\'s \'Live Announcements Slides\' folder', 'PL.announcements_moveSlides')
+
+// Submenu commented out by Chad on 05.13.18. Don't think we need this anymore. Can be deleted.
+//  .addSubMenu(
+////    DocumentApp.getUi().createMenu('➤ Rotate Content - Step by step')
+////    .addItem('1 - Return This week to Master',       'PL.announcements_moveThisToMaster')
+////    .addItem('2 - Move Next week to This week',      'PL.announcements_moveNextToThis')
+////    .addItem('3 - Move Draft to Next Week',          'PL.announcements_moveDraftToNext')
+////    .addItem('4 - Get new Master content for Draft', 'PL.announcements_moveMasterToDraft')
+////    .addItem('5 - Archive oldest week from Master',  'PL.announcements_moveOldestToArchive')
+// )
+  
+  .addSeparator()
   .addItem('Re-order Paragraphs',       'PL.announcements_reorderParagraphs')
   .addItem('Remove Short Start Dates',  'PL.announcements_removeShortStartDates')
   .addItem('Format',                    'PL.announcements_draft_callFunctions')
