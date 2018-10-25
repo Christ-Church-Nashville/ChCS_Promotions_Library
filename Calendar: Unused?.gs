@@ -1,12 +1,12 @@
-//function calendar_setWeekNumbers_DEPRECATED() {
-//  ///
-//  var sheet = SpreadsheetApp.getActive().getSheetByName(config.eventsCalendar.dataSheetName);
-//  var values = sheet.getDataRange().getValues();
-//  for(var i=sheet.getFrozenRows(); i < values.length; i++) {
-//    var dateFromSheet = values[i][3];
-//    sheet.getRange(i + 1, 1).setValue(Utilities.formatDate(dateFromSheet, config.timeZone, 'w'));
-//  }
-//}
+function calendar_setWeekNumbers_DEPRECATED() {
+  ///
+  var sheet = SpreadsheetApp.getActive().getSheetByName(config.eventsCalendar.dataSheetName);
+  var values = sheet.getDataRange().getValues();
+  for(var i=sheet.getFrozenRows(); i < values.length; i++) {
+    var dateFromSheet = values[i][3];
+    sheet.getRange(i + 1, 1).setValue(Utilities.formatDate(dateFromSheet, config.timeZone, 'w'));
+  }
+}
 
 
 //.addItem("[ 4 ] Populate Bulletin Schedule Based on Previous Year's Schedule", "repopulateBulletins")
