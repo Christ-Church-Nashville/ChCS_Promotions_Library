@@ -105,6 +105,7 @@ function announcements_moveDraftToNext(){
   var fromDoc = DocumentApp.openById(config.files.announcements.twoWeeks);
   var toDoc   = DocumentApp.openById(config.files.announcements.oneWeek);
 
+  resolveAllComments();
   announcements_copyContent(fromDoc, toDoc);
 
   //add back the title back that is omitted from the draft version
@@ -119,6 +120,29 @@ function announcements_moveDraftToNext(){
   fromDoc.getBody().clear();
 
   announcements_runAllFormattingFunctions_oneWeekOut(toDoc);
+  
+  // Private Functions
+  // -----------------
+  
+  /**
+  * Comments get left behind once all the text has been moved to the 1 week GDoc, 
+  * so make sure they are all resolved first so they can be ignored
+  */
+  
+  function resolveAllComments() {
+
+    var twoWeeksDocId = config.files.announcements.twoWeeks;
+    var comments = Drive.Comments.list(twoWeeksDocId); 
+    
+    for (var commentsIndex = 0; commentsIndex < comments.items.length; commentsIndex++) { 
+      var nextComment = comments.items[commentsIndex]
+      if (nextComment.status === 'open') {
+        Drive.Comments.remove(twoWeeksDocId, nextComment.commentId)
+      }         
+    } 
+    
+  } // moveDraftToNext.resolveAllComments()
+  
 }
 
 function announcements_moveMasterToDraft(){
