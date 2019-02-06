@@ -30,7 +30,7 @@ This is an automated notice that the \
 promotion deadline for your team's event, [ \
 {eventDate} ] \
 {eventName}, is tomorrow. This is the last reminder for a {promoType} promotion for your event.<br><br>If you would like to schedule promotion for your team's event please submit a <a href='\
-{formUrl}\'>{promoType} Promotion Request</a> or schedule a <a href='https://calendly.com/chad_barlow/promo'>Promotion Planning Meeting</a> by \
+{formUrl}\'>{promoType} Promotion Request</a> or schedule a <a href='https://calendly.com/chadbarlow/promo'>Promotion Planning Meeting</a> by \
 {promoDeadline}. If you do not want to request \
 {promoType} promotion for this event, you may ignore this email. </b><br><br>Chad<br><br>--<br>P.S. If appropriate, please forward this email to the team member responsible for initiating a promotion request. <br><br> Need more information? Visit your team's <a href='\
 {spreadsheetUrl}'>Event Sponsorship Page</a> or reply to this email.\
@@ -46,7 +46,7 @@ promotion deadline for your team's event, [ \
 {eventName}, is in three days. <br><br>If you would like to request \
 {promoType} promotion for your team's event, please submit a <a href='\
 {formUrl}\
-'>Promotion Request</a> or schedule a <a href='https://calendly.com/chad_barlow/promo'>Promotion Planning Meeting</a> by \
+'>Promotion Request</a> or schedule a <a href='https://calendly.com/chadbarlow/promo'>Promotion Planning Meeting</a> by \
 {promoDeadline}. If you do not want to request \
 {promoType} promotion for this event, you may ignore this email. </b><br><br>Chad<br><br>--<br>P.S. If appropriate, please forward this email to the team member responsible to initiating a promotion request. <br><br> Need more information? Visit your team's <a href='\
 {spreadsheetUrl}'>Event Sponsorship Page</a> or reply to this email.\

@@ -7,7 +7,7 @@ function responseForm_disableAutomation() {
   }
 
   deleteTriggerByHandlerName('onEdit_Triggered');
-//  deleteTriggerByHandlerName('onFormSubmit');//no form linked so can'y use this method 
+//  deleteTriggerByHandlerName('onFormSubmit');//no form linked so can't use this method 
 
   Browser.msgBox('Disable Automation', "Automation has been disabled.\\nForm Submissions and notifications will no longer be processed.", Browser.Buttons.OK);
 }

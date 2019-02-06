@@ -1,7 +1,7 @@
 ///reorganize
 
 
-//function announcements_transferText() {//on menu as Backdate Content
+//function announcements_transferText() {//on menu as Rotate Content
 //  announcements_moveThisSunday_to_MasterSundayAnnouncements();
 //  announcements_moveNextSunday_to_thisSunday();
 //  announcements_moveSlides();
@@ -737,7 +737,7 @@ function announcements_reorderParagraphs() {
 
 
 
-/* Development note: it would be great if this script would also reference 
+/* Redevelopment note: it would be great if this script would also reference 
 'This Sunday's Announcements' as well as 'Next Sunday's Announcements' as the
 source doc. If two matches are found, the more recently edited version should be used 
 (i.e.the version on 'Next Sunday's Announcements'). Even better would be if this script

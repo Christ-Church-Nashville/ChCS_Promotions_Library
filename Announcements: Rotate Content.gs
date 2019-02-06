@@ -2,7 +2,7 @@ function announcements_rotateContent() {
   //check to see if it's Sunday morning before Noon, if so, warn user
   var now = new Date();
   if(now.getDay()==0 && now.getHours() < 12){
-    var title = 'Backdate Content';
+    var title = 'Rotate Content';
     var prompt = Utilities.formatString(
       "\
 This will remove the [Live Announcements Slides]\n\
@@ -27,7 +27,6 @@ Do you want to continue?\
   announcements_moveDraftToNext();
   announcements_moveMasterToDraft();
   announcements_moveOldestToArchive();
-  announcements_moveSlides();
 }
 
 function announcements_moveThisToMaster(){
@@ -240,7 +239,19 @@ function announcements_moveOldestToArchive(){
   }
 }
 
-function announcements_moveSlides() {// Move Service Slides
+//Redevelopment notes:  
+  //                      - moveSlides function would be more accurately titled if it were called something like copySlides
+  //                      - moveSlides should search the children of [Recurring Content](https://drive.google.com/drive/folders/1fy7tXK8ta6SpQAC2R1Xex35gIOW78SUp) folder  
+  //                        as source folders in addition to the current source folder, which is [Pre- and Post- Service Slides](https://drive.google.com/drive/folders/0BzM8_MjdRURAXzlyVVNMdmpYLVU)
+  //                      - moveSlides should be called on a timed trigger between 11:00:00 - 11:59:59 GMT-6 on Fridays (as midnight on Friday is the cutoff for staff to change content in This Sunday Announcements script)
+  //                      - however, it can also be called manually, in which case... 
+  //                        - the notification in lines 8 - 13 ONLY applies to the moveSlides function; no other functions should call this notification
+  //                        - moveSlides should ONLY be able to run manually WITHOUT the notification in lines 8 - 13 ... 
+  //                           IF the time now is NOT between between 00:00:01 GMT-6 Saturday - 12:00:00 GMT-6 Sunday;  
+  //                           IF the filename of ['This Sunday' doc](https://docs.google.com/document/d/1U61THQS-Ktno-Ku1Jk6GX0UaSmsRgq4YGiJzePJleyo/edit) contains the date for this coming Sunday or today().
+  //                           ELSE the notification should not appear
+
+function announcements_moveSlides() {// delete all content in the destination folder and copy service slides corresponding to the events written in 'This Sunday's Announcements' doc to the destination folder
   log('Start: announcements_moveSlides()')
   var doc = DocumentApp.openById(config.files.announcements.upcoming);
   var text = doc.getBody().editAsText().getText();
