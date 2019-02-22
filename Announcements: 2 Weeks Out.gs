@@ -668,10 +668,19 @@ function announcements_getCommentsFromDocument() {
   var document_id = config.files.announcements.twoWeeks;
   var comments_list = Drive.Comments.list(document_id);
   var comments = "";
-  
+  var NUMBER_OF_MS_IN_A_WEEK = 7 * 24 * 60 * 60 * 1000
+  var thisDayLastWeek = new Date(new Date().getTime() - NUMBER_OF_MS_IN_A_WEEK)
+
   for (var i = 0; i < comments_list.items.length; i++) {
-    if (comments_list.items[i].status == "open" && comments_list.items[i].deleted == false) {
-      comments += "  " + (comments_list.items[i].content)
+  
+    var nextComment = comments_list.items[i] 
+    var modifiedDate = new Date(nextComment.modifiedDate)
+  
+    if (nextComment.status == "open" && 
+        !nextComment.deleted && 
+        modifiedDate > thisDayLastWeek) {
+    
+      comments += "  " + (nextComment.content)
     }
   }
   

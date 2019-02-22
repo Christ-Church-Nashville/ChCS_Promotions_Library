@@ -1,4 +1,4 @@
-var SCRIPT_VERSION = 'v1.5.1';
+var SCRIPT_VERSION = 'v1.6';
 var SCRIPT_NAME = 'Promotions Library';
 
 var config = {//dev note: this must be set in a file that loads early so it is available for other files. File are loaded by GAS in the order they are created.
