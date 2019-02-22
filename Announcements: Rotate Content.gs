@@ -105,7 +105,7 @@ function announcements_moveDraftToNext(){
   var fromDoc = DocumentApp.openById(config.files.announcements.twoWeeks);
   var toDoc   = DocumentApp.openById(config.files.announcements.oneWeek);
 
-  resolveAllComments();
+  // resolveAllComments();
   announcements_copyContent(fromDoc, toDoc);
 
   //add back the title back that is omitted from the draft version
