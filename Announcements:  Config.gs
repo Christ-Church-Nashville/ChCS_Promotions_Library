@@ -2,6 +2,9 @@
 config.announcements = {
   placeholder : '{{CONTENT IN ROTATION}}',
   
+  scriptLastRunText: 'Script last run: ',
+  scriptLastRunTextLength: 16,
+  
   // ==========================================================================================================
   //Feel free to change these to fit your needs. ==============================================================
   
@@ -102,6 +105,6 @@ config.announcements = {
 
 
 
-if(config.debug) config.errorNotificationEmail.push('bob+ccn-library-announcements@rupholdt.com');///debug - uncomment to let developer receive errors
-if(config.debug) config.errorNotificationEmail = ['bob+ccn-library-announcements@rupholdt.com'];///during development, don't pester chad = turn off at golive
+//if(config.debug) config.errorNotificationEmail.push('bob+ccn-library-announcements@rupholdt.com');///debug - uncomment to let developer receive errors
+//if(config.debug) config.errorNotificationEmail = ['bob+ccn-library-announcements@rupholdt.com'];///during development, don't pester chad = turn off at golive
 //}catch(e){ err('Unable to set config.announcements', e) }

@@ -56,8 +56,8 @@ promotion deadline for your team's event, [ \
     },
   };
   
-  if(config.debug) config.errorNotificationEmail.push('bob+ccn-library-calendar@rupholdt.com');///debug - uncomment to let developer receive errors
-  if(config.debug) config.errorNotificationEmail = ['bob+ccn-library-calendar@rupholdt.com'];///during development, don't pester chad = turn off at golive
+//  if(config.debug) config.errorNotificationEmail.push('bob+ccn-library-calendar@rupholdt.com');///debug - uncomment to let developer receive errors
+//  if(config.debug) config.errorNotificationEmail = ['bob+ccn-library-calendar@rupholdt.com'];///during development, don't pester chad = turn off at golive
   
 }
 catch(e) { err('Unable to set config.eventsCalendar') }

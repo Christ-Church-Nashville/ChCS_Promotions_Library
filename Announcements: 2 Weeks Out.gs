@@ -558,17 +558,16 @@ function announcements_checkName(dateToSend) {
   var emailListArray = [];
   
   for (data in staffToEmail) {
+  
     var emailAddress = staffToEmail[data];
     var staffName = emailAddress[0];
     var staffEmail = emailAddress[1];
-    
     
     if (staffEmail != "") {
       var res = announcements_findNameInDraft(staffName);
       if (res || comments.indexOf(('' + staffName).toUpperCase()) > -1) //if staffname is in text || staffname is in a comment on the doc
       emailListArray.push(staffEmail);
-    }
-    
+    }    
   }
   
   var commentArryRes = announcements_driveAPI();
@@ -602,7 +601,8 @@ function announcements_arrayUnique(array) {
 
 function announcements_sendDraftMailFinal(emailList, dateToSend) {
   // emailList="bhamare.nitin3@gmail.com";
-  var sundayAnnouncementsDraftDocumentUrl = DocumentApp.openById(config.files.announcements.twoWeeks).getUrl();
+  var documentId = config.files.announcements.twoWeeks;
+  var sundayAnnouncementsDraftDocumentUrl = DocumentApp.openById(documentId).getUrl();
   //  log(sundayAnnouncementsDraftDocumentUrl);return
   var subject = Utilities.formatString("Please Review: [ %s ] Sunday Announcements draft", dateToSend);
   var body = Utilities.formatString("Dear Event Sponsor: <br><br> \
@@ -614,12 +614,51 @@ Thank you!<br><br>--<br>\
                                     dateToSend
                                    );
   emailList = emailList.replace(/\,$/, '');//should build the list without the trailing comma in the first place
-  MailApp.sendEmail({
-    name: "communications@ccnash.org",
-    to: emailList,
-    subject: subject,
-    htmlBody: body
-  });
+  
+  if (emailList === '') {
+  
+    log('No emails sent - email list empty')
+    
+  } else {
+  
+    MailApp.sendEmail({
+      name: "communications@ccnash.org",
+      to: emailList,
+      subject: subject,
+      htmlBody: body
+    });
+  }
+  
+  storeScriptRunTime();
+  
+  log('Sent emails to ' + emailList)
+  
+  return;
+  
+  // Private Functions
+  // -----------------
+  
+  function storeScriptRunTime() {
+    
+    var comments = Drive.Comments.list(documentId);
+    
+    if (comments.items && comments.items.length > 0) {
+      
+      for (var i = 0; i < comments.items.length; i++) {
+        
+        var comment = comments.items[i]
+        var content = comment.content
+        
+        if (content.indexOf(config.announcements.scriptLastRunText) !== -1) {            
+          var resource = {content: config.announcements.scriptLastRunText + new Date()}
+          Drive.Comments.patch(resource, documentId, comment.commentId)
+          log('Stored last script run time of ' + new Date())
+        }
+      }
+    }
+    
+  } // storeScriptRunTime()
+  
 }
 
 function announcements_makestaffMailList() {///redo this to use getDataRange() then reduce to get needed output
@@ -665,26 +704,56 @@ Require advanced Drive activated.
 *****************************************************************************
 */
 function announcements_getCommentsFromDocument() {
+
   var document_id = config.files.announcements.twoWeeks;
   var comments_list = Drive.Comments.list(document_id);
   var comments = "";
-  var NUMBER_OF_MS_IN_A_WEEK = 7 * 24 * 60 * 60 * 1000
-  var thisDayLastWeek = new Date(new Date().getTime() - NUMBER_OF_MS_IN_A_WEEK)
-
+  var lastTimeScriptRun = getLastTimeScriptRun();
+  
   for (var i = 0; i < comments_list.items.length; i++) {
   
     var nextComment = comments_list.items[i] 
     var modifiedDate = new Date(nextComment.modifiedDate)
   
-    if (nextComment.status == "open" && 
+    if (nextComment.content.indexOf(config.announcements.scriptLastRunText) === -1 &&
+        nextComment.status == "open" && 
         !nextComment.deleted && 
-        modifiedDate > thisDayLastWeek) {
+        modifiedDate > lastTimeScriptRun) {
     
       comments += "  " + (nextComment.content)
     }
   }
   
+  if (comments === '') {
+    log('No emails to be sent - no comments')
+  }
+  
   return comments;
+  
+  // Private Functions
+  // -----------------
+  
+  function getLastTimeScriptRun() {
+    
+    var datetime = new Date(0); // 1970 - not run yet
+    var comments = Drive.Comments.list(document_id);
+    
+    if (comments.items && comments.items.length > 0) {
+      
+      for (var i = 0; i < comments.items.length; i++) {
+        
+        var content = comments.items[i].content;
+        
+        if (content.indexOf(config.announcements.scriptLastRunText) !== -1) {           
+          datetime = new Date(content.slice(config.announcements.scriptLastRunTextLength));
+        }
+      }
+    } 
+    
+    return datetime
+    
+  } // getLastTimeScriptRun()
+  
 }
 
 function announcements_reorderParagraphs() {
