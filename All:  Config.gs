@@ -1,7 +1,16 @@
-var SCRIPT_VERSION = 'v1.6';
+var SCRIPT_VERSION = 'v1.7';
 var SCRIPT_NAME = 'Promotions Library';
 
 var config = {//dev note: this must be set in a file that loads early so it is available for other files. File are loaded by GAS in the order they are created.
+  
+//// !!!!!!!! TEST VALUE !!!!!!!!!!!!
+//
+//files: {
+//  staffData: '1HnsJXOi2S-KiMBzu8BW63BVn2Kk0o5dbU_uMVh6wcPg',
+//  announcements: {
+//    twoWeeks: '11WLqbxCb_NCNAA9sSxn-SD5sM6Mae0yUYe0w-rj-e58'
+//  }
+//},
   
   notificationEmail : 'chbarlow@gmail.com',
   
