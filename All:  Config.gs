@@ -1,38 +1,46 @@
-var SCRIPT_VERSION = 'v1.7';
+var SCRIPT_VERSION = 'v1.7.1';
 var SCRIPT_NAME = 'Promotions Library';
 
-var config = {//dev note: this must be set in a file that loads early so it is available for other files. File are loaded by GAS in the order they are created.
+
+//dev note: this must be set in a file that loads early so it is available for other 
+// files. File are loaded by GAS in the order they are created.
   
-//// !!!!!!!! TEST VALUE !!!!!!!!!!!!
-//
-//files: {
-//  staffData: '1HnsJXOi2S-KiMBzu8BW63BVn2Kk0o5dbU_uMVh6wcPg',
-//  announcements: {
-//    twoWeeks: '11WLqbxCb_NCNAA9sSxn-SD5sM6Mae0yUYe0w-rj-e58'
-//  }
-//},
-  
-  notificationEmail : 'chbarlow@gmail.com',
-  
-  files : {//these are the ids for the files used throughtout the ChCS system ///move this to setup function
-    staffData             : '1iiFmdqUd-CoWtUjZxVgGcNb74dPVh-l5kuU_G5mmiHI',
-    staffDataTemplate     : '',//set in staffData file config
-    responseForm          : '1JEqPQJSiBliliqw1y-wrrdP6ikU11DPuIF72l-rN84g',//this is the new one 2018-02
-    eventsCalendar        : '1d0-hBf96ilIpAO67LR86leEq09jYP2866uWC48bJloc',
-    announcements         : {
-      master              : '1vt_yq2YiswCeZ_yt7oJVAgfBs8x86sYktBiC2COErcE',//master
-      twoWeeks            : '1nwqLAYy9MI6xhzgciSmF5S2m0Aj-ec3PMN8WRM0zY-Y',//draft
-      oneWeek             : '1NvwR5-7VrxZdTVZ3-iW7ib80dfoCUKFzem_XUpFrRwo',//next sunday
-      upcoming            : '1U61THQS-Ktno-Ku1Jk6GX0UaSmsRgq4YGiJzePJleyo',//this sunday
-      archive             : '13nqFE0ACEBGPoPhFquub-9nT-tLwcVovQvb0LYQDQT0',//archive
-    },
-    slides                : {
-      folderSource        : '0BzM8_MjdRURAU29mMzBxTEVnZjA',
-      folderDestination   : '0BzM8_MjdRURAMGxiSVIzYUZkX0U',
-      slidesParent        : '0BzM8_MjdRURAXzlyVVNMdmpYLVU',//this is the parent folder for source and dest
-    },
-    hootsuite             : '1x2fjbyICQ5nHI2cF5l4Un3inHui-M0rsUF_PyszYlcE',
-  },
+var config = {
+
+//// !!!!!!!! TEST VALUE - COMMENT OUT IN PRODUCTION !!!!!!!!!!!!
+
+files: {
+  staffData: '1HnsJXOi2S-KiMBzu8BW63BVn2Kk0o5dbU_uMVh6wcPg',
+  announcements: {
+//    twoWeeks: '11WLqbxCb_NCNAA9sSxn-SD5sM6Mae0yUYe0w-rj-e58' // Test doc - [ 02.10 ] Sunday Announcements - Draft Document
+    twoWeeks: '1nwqLAYy9MI6xhzgciSmF5S2m0Aj-ec3PMN8WRM0zY-Y', // Live doc
+    master: '1vt_yq2YiswCeZ_yt7oJVAgfBs8x86sYktBiC2COErcE', // Live doc
+  }
+},
+
+//// !!!!!!!! END OF TEST VALUES !!!!!!!!!
+
+//  notificationEmail : 'chbarlow@gmail.com',
+//  
+//  files : {//these are the ids for the files used throughtout the ChCS system ///move this to setup function
+//    staffData             : '1iiFmdqUd-CoWtUjZxVgGcNb74dPVh-l5kuU_G5mmiHI',
+//    staffDataTemplate     : '',//set in staffData file config
+//    responseForm          : '1JEqPQJSiBliliqw1y-wrrdP6ikU11DPuIF72l-rN84g',//this is the new one 2018-02
+//    eventsCalendar        : '1d0-hBf96ilIpAO67LR86leEq09jYP2866uWC48bJloc',
+//    announcements         : {
+//      master              : '1vt_yq2YiswCeZ_yt7oJVAgfBs8x86sYktBiC2COErcE',//master
+//      twoWeeks            : '1nwqLAYy9MI6xhzgciSmF5S2m0Aj-ec3PMN8WRM0zY-Y',//draft
+//      oneWeek             : '1NvwR5-7VrxZdTVZ3-iW7ib80dfoCUKFzem_XUpFrRwo',//next sunday
+//      upcoming            : '1U61THQS-Ktno-Ku1Jk6GX0UaSmsRgq4YGiJzePJleyo',//this sunday
+//      archive             : '13nqFE0ACEBGPoPhFquub-9nT-tLwcVovQvb0LYQDQT0',//archive
+//    },
+//    slides                : {
+//      folderSource        : '0BzM8_MjdRURAU29mMzBxTEVnZjA',
+//      folderDestination   : '0BzM8_MjdRURAMGxiSVIzYUZkX0U',
+//      slidesParent        : '0BzM8_MjdRURAXzlyVVNMdmpYLVU',//this is the parent folder for source and dest
+//    },
+//    hootsuite             : '1x2fjbyICQ5nHI2cF5l4Un3inHui-M0rsUF_PyszYlcE',
+//  },
   projectName : 'CCN Promotions Library',//for logging and error reporting
   //  live : false,///set to true to allow document content deletions to occur
   debug : false,//set to on to allow debug emails to be sent - and debug logging
